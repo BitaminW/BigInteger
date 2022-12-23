@@ -19,7 +19,6 @@ private:
 
 public:
 	// Constructor :  
-	BigInteger();
 	BigInteger(ull n = 0);
 	BigInteger(std::string &);
 	BigInteger(const char *);
@@ -29,8 +28,8 @@ public:
 	~BigInteger();
 
 	// Helper Functions..
-	friend void divide_by_2(BigInteger& a);
-	friend void Null(const BigInteger&);
+	friend void divide_by_2(BigInteger& ref);
+	friend bool Null(const BigInteger& );
 	friend int	Length(const BigInteger&);
 	int operator[](const int)const;
 	
@@ -51,13 +50,39 @@ public:
 
 
 	//	(Addition , Subtraction)
-	friend BigInteger& operator+=(BigInteger&, const BigInteger&);
-	friend BigInteger& operator-=(BigInteger&, const BigInteger&);
+	friend BigInteger &operator+=(BigInteger&, const BigInteger&);
+	friend BigInteger &operator-=(BigInteger&, const BigInteger&);
 	friend BigInteger operator+(const BigInteger&, const BigInteger&);
 	friend BigInteger operator-(const BigInteger&, const BigInteger&);
 
 
 	// Comparison operators
+	friend bool operator==(const BigInteger&, const BigInteger&);
+	friend bool operator!=(const BigInteger&, const BigInteger&);
+
+	friend bool operator>(const BigInteger&, const BigInteger&);
+	friend bool operator>=(const BigInteger&, const BigInteger&);
+	friend bool operator<(const BigInteger&, const BigInteger&);
+	friend bool operator<=(const BigInteger&, const BigInteger&);
+
+	
+	//	(Multifplication , Division)
+	friend BigInteger &operator*=(BigInteger&, const BigInteger&);
+	friend BigInteger operator*(const BigInteger&, const BigInteger&);
+	friend BigInteger &operator/=(BigInteger&, const BigInteger&);
+	friend BigInteger operator/(const BigInteger&, const BigInteger&);
+
+	
+	// Modulo
+	friend BigInteger &operator%=(BigInteger&, const BigInteger&);
+	friend BigInteger operator%(const BigInteger&, const BigInteger&);
+
+
+	// Power Function
+	friend BigInteger &operator^=(BigInteger&, const BigInteger&);
+	friend BigInteger operator^(const BigInteger&, const BigInteger&);
+
+
 
 
 
