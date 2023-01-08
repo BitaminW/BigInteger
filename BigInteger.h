@@ -14,7 +14,7 @@
 
 
 class BigInteger{
-private:
+public:
 	std::string m_value;
 
 public:
@@ -44,9 +44,9 @@ public:
 
 	//	Incrementation
 	BigInteger& operator++();
-	BigInteger& operator++(int temp);
+	BigInteger operator++(int temp);
 	BigInteger& operator--();
-	BigInteger& operator--(int temp);
+	BigInteger operator--(int temp);
 
 
 	//	(Addition , Subtraction)
@@ -82,6 +82,11 @@ public:
 	friend BigInteger &operator^=(BigInteger&, const BigInteger&);
 	friend BigInteger operator^(const BigInteger&, const BigInteger&);
 
+
+
+	//Read and Write
+	friend std::ostream& operator<<(std::ostream&, const BigInteger&);
+	friend std::istream& operator>>(std::istream&, BigInteger&);
 
 
 
