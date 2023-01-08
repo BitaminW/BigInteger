@@ -1,7 +1,6 @@
 #include "BigInteger.h"
 
-
-
+//		Constructor
 
 BigInteger::BigInteger(ull number){
 	do {
@@ -63,6 +62,7 @@ int BigInteger::operator[](const int index)const {
 	return m_value[index];
 }
 
+
 bool operator==(const BigInteger& left, const BigInteger& right) {
 	return left.m_value == right.m_value;
 }
@@ -113,30 +113,118 @@ BigInteger& BigInteger::operator++() {
 	return *this;
 }
 
-//BigInteger BigInteger::operator++(int temp) {
-//	BigInteger aux;
-//	aux = *this;
-//	++(*this);
-//	return aux;
-//}
+BigInteger BigInteger::operator++(int temp) {
+	BigInteger aux;
+	aux = *this;
+	++(*this);
+	return aux;
+}
+
+BigInteger& BigInteger::operator--() {
+	if (m_value[0] == 0 && m_value.size() == 1)
+		throw("UNDERFLOW");
+	int i, length = m_value.size();
+	
+	for (i = 0; m_value[i] == 0 && i < length; i++)
+		m_value[i] = 9;
+	
+	m_value[i]--;
+	if (length > 1 && m_value[length - 1] == 0)
+		m_value.pop_back();
+	
+	return *this;
+}
+
+BigInteger BigInteger::operator--(int temp) {
+	BigInteger aux;
+	aux = *this;
+	--(*this);
+	return aux;
+}
+
+BigInteger &operator+=(BigInteger& left, const BigInteger& right) {
+	int t = 0, s, i;
+	int n = Length(left), m = Length(right);
+
+	if (m > n) {
+		left.m_value.append(m - n, 0);
+	}
+	n = Length(left);
+
+	for (i = 0; i < n; i++) {
+		if (i < m)
+			s = (left.m_value[i] + right.m_value[i]) + t;
+		else
+			s = left.m_value[i] + t;
+
+		t = s / 10;
+		left.m_value[i] = (s % 10);
+	}
+	if (t)
+		left.m_value.push_back(t);
+
+	return left;
+}
+
+BigInteger operator+(const BigInteger& a, const BigInteger& b) {
+	BigInteger temp;
+	temp = a;
+	temp += b;
+	return temp;
+}
+
+BigInteger& operator-=(BigInteger& left, const BigInteger& right) {
+	if (left < right)
+		throw("UNDERFLOW");
+
+	int n = Length(left), m = Length(right);
+	int i, s, t = 0;
+	
+
+	for (i = 0; i < n; i++) {
+		if (i < m)
+			s = left.m_value[i] - right.m_value[i] + t;
+		else
+			s = left.m_value[i] + t;
+
+		if (s < 0) {
+			s += 10;
+			t = -1;
+		}
+		else
+			t = 0;
+
+		left.m_value[i] = s;
+	}
+
+	// 0으로 채워져있는 앞 자리수를 줄여준다.
+	while (n > 1 && left.m_value[n - 1] == 0) {
+		left.m_value.pop_back();
+		n--;
+	}
+	return left;
+}
+ 
 
 
-/// <summary>
-/// TODO ::
-/// </summary>
-/// <returns></returns>
-//BigInteger& BigInteger::operator--() {
-//	if (m_value[0] == 0 && m_value.size() == 1)
-//		throw("UNDERFLOW");
-//	int i, length = m_value.size();
-//	
-//	for (i = 0; m_value[i] == 0 && i < length; i++)
-//		m_value[i] = 9;
-//	
-//	m_value[i]--;
-//	if (length > 1 && m_value[length - 1] == 0)
-//		m_value.pop_back();
-//	
-//	return *this;
-//}
+/*
+	입출력 오버로딩
+*/
 
+std::istream& operator>>(std::istream& in, BigInteger& a) {
+	std::string s;
+	in >> s;
+	int n = s.size();
+	for (int i = n - 1; i >= 0; i--) {
+		if (!isdigit(s[i]))
+			throw("INVALID NUMBER");
+		a.m_value[n - i - 1] = s[i];
+	}
+	return in;
+}
+
+std::ostream& operator<<(std::ostream& out, const BigInteger& a) {
+	for (int i = a.m_value.size() - 1; i >= 0; i--)
+		std::cout << (short)a.m_value[i];
+	return std::cout;
+}
