@@ -100,6 +100,10 @@ BigInteger& BigInteger::operator=(const BigInteger& right) {
 	return *this;
 }
 
+/*
+
+	*******	i 스코프 확인    *********
+*/
 BigInteger& BigInteger::operator++() {
 	int i, length = m_value.size();
 	for (i = 0; i < length && m_value[i] == 9; i++) 
@@ -143,7 +147,7 @@ BigInteger BigInteger::operator--(int temp) {
 }
 
 BigInteger &operator+=(BigInteger& left, const BigInteger& right) {
-	int t = 0, s, i;
+	int t = 0, s;
 	int n = Length(left), m = Length(right);
 
 	if (m > n) {
@@ -151,7 +155,7 @@ BigInteger &operator+=(BigInteger& left, const BigInteger& right) {
 	}
 	n = Length(left);
 
-	for (i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		if (i < m)
 			s = (left.m_value[i] + right.m_value[i]) + t;
 		else
@@ -173,15 +177,15 @@ BigInteger operator+(const BigInteger& a, const BigInteger& b) {
 	return temp;
 }
 
-BigInteger& operator-=(BigInteger& left, const BigInteger& right) {
+BigInteger &operator-=(BigInteger& left, const BigInteger& right) {
 	if (left < right)
 		throw("UNDERFLOW");
 
 	int n = Length(left), m = Length(right);
-	int i, s, t = 0;
+	int s, t = 0;
 	
 
-	for (i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++) {
 		if (i < m)
 			s = left.m_value[i] - right.m_value[i] + t;
 		else
@@ -204,14 +208,48 @@ BigInteger& operator-=(BigInteger& left, const BigInteger& right) {
 	}
 	return left;
 }
- 
+
+
+BigInteger operator-(const BigInteger& left, const BigInteger& right) {
+	BigInteger temp;
+	temp = left;
+	temp -= right; // BigInteger& operator-= called
+	return temp;
+}
+
+BigInteger &operator*=(BigInteger& left, const BigInteger& right) {
+	if (Null(left) || Null(right)) {
+		left = BigInteger();
+		return left;
+	}
+	int n = left.m_value.size(), m = right.m_value.size();
+	std::vector<int> v(n + m, 0);
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			v[i + j] += (left.m_value[i]) * (right.m_value[j]);
+		}
+	}
+	n += m;
+	left.m_value.resize(v.size());
+	
+	for (int s, i = 0, t = 0; i < n; i++) {
+		s = t + v[i];
+		v[i] = s % 10;
+		t = s / 10;
+		left.m_value[i] = v[i];
+	}
+	for (int i = n - 1; (i >= 1 && !v[i]); i--) {
+		left.m_value.pop_back();
+	}
+	return left;
+}
 
 
 /*
 	입출력 오버로딩
 */
 
-std::istream& operator>>(std::istream& in, BigInteger& a) {
+std::istream &operator>>(std::istream& in, BigInteger& a) {
 	std::string s;
 	in >> s;
 	int n = s.size();
@@ -223,7 +261,7 @@ std::istream& operator>>(std::istream& in, BigInteger& a) {
 	return in;
 }
 
-std::ostream& operator<<(std::ostream& out, const BigInteger& a) {
+std::ostream &operator<<(std::ostream &out, const BigInteger &a) {
 	for (int i = a.m_value.size() - 1; i >= 0; i--)
 		std::cout << (short)a.m_value[i];
 	return std::cout;
