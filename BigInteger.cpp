@@ -36,7 +36,7 @@ BigInteger::BigInteger(BigInteger& ref_BigInteger) {
 
 
 BigInteger::~BigInteger() {
-
+	//
 }
 
 
@@ -55,6 +55,8 @@ int Length(const BigInteger& ref_BigInteger) {
 	return ref_BigInteger.m_value.size();
 }
 
+// 0번째 인덱스부터 1의 자리로 판단 
+// 1000  ==>  index[0] == 0  , index[3] == 1
 int BigInteger::operator[](const int index)const {
 	// 인덱스 범위 밖으로 접근하거나 인덱스가 0일 경우 에러 발생
 	if (m_value.size() <= index || index < 0)
@@ -95,6 +97,7 @@ bool operator<=(const BigInteger& left, const BigInteger& right) {
 	return !(left > right);
 }
 
+// 대입 연산자 오버로딩
 BigInteger& BigInteger::operator=(const BigInteger& right) {
 	m_value = right.m_value;
 	return *this;
@@ -146,7 +149,7 @@ BigInteger BigInteger::operator--(int temp) {
 	return aux;
 }
 
-BigInteger &operator+=(BigInteger& left, const BigInteger& right) {
+BigInteger& operator+=(BigInteger& left, const BigInteger& right) {
 	int t = 0, s;
 	int n = Length(left), m = Length(right);
 
@@ -177,7 +180,7 @@ BigInteger operator+(const BigInteger& a, const BigInteger& b) {
 	return temp;
 }
 
-BigInteger &operator-=(BigInteger& left, const BigInteger& right) {
+BigInteger& operator-=(BigInteger& left, const BigInteger& right) {
 	if (left < right)
 		throw("UNDERFLOW");
 
@@ -217,7 +220,7 @@ BigInteger operator-(const BigInteger& left, const BigInteger& right) {
 	return temp;
 }
 
-BigInteger &operator*=(BigInteger& left, const BigInteger& right) {
+BigInteger& operator*=(BigInteger& left, const BigInteger& right) {
 	if (Null(left) || Null(right)) {
 		left = BigInteger();
 		return left;
@@ -244,12 +247,52 @@ BigInteger &operator*=(BigInteger& left, const BigInteger& right) {
 	return left;
 }
 
+BigInteger operator*(const BigInteger& left, const BigInteger& right) {
+	BigInteger temp;
+	temp = left;
+	temp *= right;         // BigInteger &operator*= 호출
+	return temp;
+}
+
+// friend 키워드 에러 .. [private에 접근 불가능 이슈]
+//
+//BigInteger& operator/=(BigInteger left, BigInteger& right) {
+//	if (Null(right))
+//		throw("Error: Division By 0");
+//	if (left < right) {
+//		left = BigInteger();
+//		return left;
+//	}
+//	if (left == right) {
+//		left = BigInteger(1);
+//		return left;
+//	}
+//	
+//	int i, cc, lgcat = 0;
+//	int n = Length(left), m = Length(right);
+//	std::vector<int> cat(n, 0);
+//	BigInteger temp;
+//	
+//	
+//
+//
+//	for (i = n - 1; (temp * 10 + left.m_value[i]) < right;) {
+//
+//	}
+//}	
+
+
+
+
+BigInteger operator/(const BigInteger& left, const BigInteger& right) {
+	
+}
 
 /*
 	입출력 오버로딩
 */
 
-std::istream &operator>>(std::istream& in, BigInteger& a) {
+std::istream& operator>>(std::istream& in, BigInteger& a) {
 	std::string s;
 	in >> s;
 	int n = s.size();
@@ -261,7 +304,7 @@ std::istream &operator>>(std::istream& in, BigInteger& a) {
 	return in;
 }
 
-std::ostream &operator<<(std::ostream &out, const BigInteger &a) {
+std::ostream& operator<<(std::ostream &out, const BigInteger &a) {
 	for (int i = a.m_value.size() - 1; i >= 0; i--)
 		std::cout << (short)a.m_value[i];
 	return std::cout;
