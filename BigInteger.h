@@ -14,7 +14,7 @@
 
 
 class BigInteger{
-public:
+private:
 	std::string m_value;
 
 public:
@@ -50,9 +50,9 @@ public:
 
 
 	//	(Addition , Subtraction)
-	friend BigInteger &operator+=(BigInteger&, const BigInteger&);
-	friend BigInteger &operator-=(BigInteger&, const BigInteger&);
+	friend BigInteger& operator+=(BigInteger&, const BigInteger&);
 	friend BigInteger operator+(const BigInteger&, const BigInteger&);
+	friend BigInteger& operator-=(BigInteger&, const BigInteger&);
 	friend BigInteger operator-(const BigInteger&, const BigInteger&);
 
 
@@ -67,19 +67,19 @@ public:
 
 	
 	//	(Multifplication , Division)
-	friend BigInteger &operator*=(BigInteger&, const BigInteger&);
+	friend BigInteger& operator*=(BigInteger&, const BigInteger&);
 	friend BigInteger operator*(const BigInteger&, const BigInteger&);
-	friend BigInteger &operator/=(BigInteger&, const BigInteger&);
+	friend BigInteger& operator/=(BigInteger&, const BigInteger&);
 	friend BigInteger operator/(const BigInteger&, const BigInteger&);
-
+	
 	
 	// Modulo
-	friend BigInteger &operator%=(BigInteger&, const BigInteger&);
+	friend BigInteger& operator%=(BigInteger&, const BigInteger&);
 	friend BigInteger operator%(const BigInteger&, const BigInteger&);
 
 
 	// Power Function
-	friend BigInteger &operator^=(BigInteger&, const BigInteger&);
+	friend BigInteger& operator^=(BigInteger&, const BigInteger&);
 	friend BigInteger operator^(const BigInteger&, const BigInteger&);
 
 
