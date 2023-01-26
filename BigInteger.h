@@ -23,6 +23,7 @@ public:
 	BigInteger(std::string &);
 	BigInteger(const char *);
 	BigInteger(BigInteger &);
+	// BigInteger(BigInteger&&);
 
 
 	~BigInteger();
