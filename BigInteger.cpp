@@ -34,6 +34,11 @@ BigInteger::BigInteger(BigInteger& ref_BigInteger) {
 	m_value = ref_BigInteger.m_value;
 }
 
+// r-value
+//BigInteger::BigInteger(BigInteger&& ref_BigInteger) {
+//	m_value = ref_BigInteger.m_value;
+//}
+
 
 BigInteger::~BigInteger() {
 	//
@@ -53,6 +58,17 @@ bool Null(const BigInteger& ref_BigInteger) {
 
 int Length(const BigInteger& ref_BigInteger) {
 	return ref_BigInteger.m_value.size();
+}
+
+void divide_by_2(BigInteger& ref_BigInteger) {
+	int add = 0;
+	for (int i = ref_BigInteger.m_value.size() - 1; i >= 0; i--) {
+		int digit = (ref_BigInteger.m_value[i] >> 1) + add;
+		add = ((ref_BigInteger.m_value[i] & 1) * 5);
+		ref_BigInteger.m_value[i] = digit;
+	}
+	while (ref_BigInteger.m_value.size() > 1 && !(ref_BigInteger.m_value.back()))
+		ref_BigInteger.m_value.pop_back();
 }
 
 // 0번째 인덱스부터 1의 자리로 판단 
@@ -267,20 +283,99 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 		return left;
 	}
 
-	int i, cc, lgcat = 0;
+	int i, j, lgcat = 0;
 	int n = Length(left), m = Length(right);
 	std::vector<int> cat(n, 0);
 	BigInteger temp;
 
-	for (i = n - 1; (temp * 10 + left.m_value[i]) < right;) {
-	
+	for (i = n - 1; (temp * 10 + left.m_value[i]) < right; i--) {
+		temp *= 10;
+		temp += left.m_value[i];
 	}
+
+	for (; i >= 0; i--) {
+		temp = (temp * 10) + left.m_value[i];
+		for (j = 9; j * right > temp; j--);
+
+		temp -= (j * right);
+		cat[lgcat++] = j;
+	}
+
+	left.m_value.resize(cat.size());
+	
+	for (i = 0; i < lgcat; i++)
+		left.m_value[i] = cat[lgcat - i - 1];
+
+	left.m_value.resize(lgcat);
+	return left;
 }
 
 
 BigInteger operator/(const BigInteger& left, const BigInteger& right) {
-	
+	BigInteger temp;
+	temp = left;
+	temp /= right;
+	return temp;
 }
+
+BigInteger& operator%=(BigInteger& left, const BigInteger& right) {
+	if (Null(right))
+		throw("Error: Division By 0");
+
+	if (left < right)
+		return left;
+
+	if (left == right) {
+		left = BigInteger();
+		return left;
+	}
+
+	int i, j, lgcat = 0;
+	int n = Length(left), m = Length(right);
+	std::vector<int> cat(n, 0);
+	BigInteger temp;
+
+	for (i = n - 1; (temp * 10 + left.m_value[i]) < right; i--) {
+		temp *= 10;
+		temp += left.m_value[i];
+	}
+	for (; i >= 0; i--) {
+		temp = temp * 10 + left.m_value[i];
+		for (j = 9; j * right > temp; j--);
+		
+		temp -= j * right;
+		cat[lgcat++] = j;
+	}
+	left = temp;
+	return left;
+}
+
+BigInteger operator%(const BigInteger& left, const BigInteger& right) {
+	BigInteger temp;
+	temp = left;
+	temp %= right;
+	return temp;
+}
+
+BigInteger& operator^=(BigInteger& left, const BigInteger& right) {
+	BigInteger exponent, base(left);
+	exponent = right;
+	left = 1;
+	while (!Null(exponent)) {
+		if (exponent[0] & 1)
+			left *= base;
+		base *= base;
+		divide_by_2(exponent);
+	}
+	return left;
+}
+
+BigInteger operator^(BigInteger& left, BigInteger& right) {
+	BigInteger temp(left);
+	temp ^= right;
+	return temp;
+}
+
 
 /*
 	입출력 오버로딩
