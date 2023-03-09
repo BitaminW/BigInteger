@@ -1,5 +1,5 @@
 #include "BigInteger.h"
-
+#include <math.h>
 //		Constructor
 
 BigInteger::BigInteger(ull number){
@@ -14,8 +14,9 @@ BigInteger::BigInteger(std::string& str){
 	int str_length = str.size();
 	
 	for (int i = str_length - 1; i >= 0; i--) {
-		if (!isdigit(str[i]))
+		if (!isdigit(str[i])) {
 			throw("ERROR");
+		}
 		m_value.push_back(str[i] - '0');
 	}
 }
@@ -24,8 +25,10 @@ BigInteger::BigInteger(const char* s) {
 	m_value = "";
 
 	for (int i = strlen(s) - 1; i >= 0; i--) {
-		if (!isdigit(s[i]))
+		if (!isdigit(s[i])) {
 			throw("ERROR");
+		}
+			
 		m_value.push_back(s[i] - '0');
 	}
 }
@@ -33,6 +36,8 @@ BigInteger::BigInteger(const char* s) {
 BigInteger::BigInteger(BigInteger& ref_BigInteger) {
 	m_value = ref_BigInteger.m_value;
 }
+
+BigInteger::BigInteger(const BigInteger& other) : m_value(other.m_value) {}
 
 // r-value
 //BigInteger::BigInteger(BigInteger&& ref_BigInteger) {
@@ -75,8 +80,10 @@ void divide_by_2(BigInteger& ref_BigInteger) {
 // 1000  ==>  index[0] == 0  , index[3] == 1
 int BigInteger::operator[](const int index)const {
 	// 인덱스 범위 밖으로 접근하거나 인덱스가 0일 경우 에러 발생
-	if (m_value.size() <= index || index < 0)
+	if (m_value.size() <= index || index < 0) {
 		throw("ERROR");
+	}
+		
 	return m_value[index];
 }
 
@@ -92,11 +99,14 @@ bool operator!=(const BigInteger& left, const BigInteger& right) {
 bool operator<(const BigInteger& left, const BigInteger& right) {
 	int temp1 = Length(left), temp2 = Length(right);
 	// 길이가 같지 않다면 그대로 left < right 리턴
-	if (temp1 != temp2) 
+	if (temp1 != temp2) {
 		return temp1 < temp2;
+	}
+		
 	while (temp1--) {
-		if (left.m_value[temp1] != right.m_value[temp2])
+		if (left.m_value[temp1] != right.m_value[temp2]) {
 			return left.m_value[temp1] < right.m_value[temp2];
+		}
 	}
 	return false;
 }
@@ -119,20 +129,20 @@ BigInteger& BigInteger::operator=(const BigInteger& right) {
 	return *this;
 }
 
-/*
-
-	*******	i 스코프 확인    *********
-*/
 BigInteger& BigInteger::operator++() {
 	int i, length = m_value.size();
-	for (i = 0; i < length && m_value[i] == 9; i++) 
+	for (i = 0; i < length && m_value[i] == 9; i++) {
 		m_value[i] = 0;
+	}
+		
 	
-	if (i == length)
+	if (i == length) {
 		m_value.push_back(1);
-	else
+	}
+	else {
 		m_value[i]++;
-	
+	}
+		
 	return *this;
 }
 
@@ -144,17 +154,21 @@ BigInteger BigInteger::operator++(int temp) {
 }
 
 BigInteger& BigInteger::operator--() {
-	if (m_value[0] == 0 && m_value.size() == 1)
+	if (m_value[0] == 0 && m_value.size() == 1) {
 		throw("UNDERFLOW");
+	}
+		
 	int i, length = m_value.size();
 	
-	for (i = 0; m_value[i] == 0 && i < length; i++)
+	for (i = 0; m_value[i] == 0 && i < length; i++) {
 		m_value[i] = 9;
-	
+	}
 	m_value[i]--;
-	if (length > 1 && m_value[length - 1] == 0)
+
+	if (length > 1 && m_value[length - 1] == 0) {
 		m_value.pop_back();
-	
+	}
+		
 	return *this;
 }
 
@@ -166,7 +180,7 @@ BigInteger BigInteger::operator--(int temp) {
 }
 
 BigInteger& operator+=(BigInteger& left, const BigInteger& right) {
-	int t = 0, s;
+	int temp = 0, s;
 	int n = Length(left), m = Length(right);
 
 	if (m > n) {
@@ -175,17 +189,20 @@ BigInteger& operator+=(BigInteger& left, const BigInteger& right) {
 	n = Length(left);
 
 	for (int i = 0; i < n; i++) {
-		if (i < m)
-			s = (left.m_value[i] + right.m_value[i]) + t;
-		else
-			s = left.m_value[i] + t;
-
-		t = s / 10;
+		if (i < m) {
+			s = (left.m_value[i] + right.m_value[i]) + temp;
+		}
+		else {
+			s = left.m_value[i] + temp;
+		}		
+		temp = s / 10;
 		left.m_value[i] = (s % 10);
 	}
-	if (t)
-		left.m_value.push_back(t);
 
+	if (temp) {
+		left.m_value.push_back(temp);
+	}
+		
 	return left;
 }
 
@@ -197,26 +214,30 @@ BigInteger operator+(const BigInteger& a, const BigInteger& b) {
 }
 
 BigInteger& operator-=(BigInteger& left, const BigInteger& right) {
-	if (left < right)
-		throw("UNDERFLOW");
-
+	if (left < right) {
+		throw std::underflow_error("UNDERFLOW");
+	}
+		
 	int n = Length(left), m = Length(right);
-	int s, t = 0;
+	int s, temp = 0;
 	
 
 	for (int i = 0; i < n; i++) {
-		if (i < m)
-			s = left.m_value[i] - right.m_value[i] + t;
-		else
-			s = left.m_value[i] + t;
-
+		if (i < m) {
+			s = left.m_value[i] - right.m_value[i] + temp;
+		}
+		else {
+			s = left.m_value[i] + temp;
+		}
+			
 		if (s < 0) {
 			s += 10;
-			t = -1;
+			temp = -1;
 		}
-		else
-			t = 0;
-
+		else {
+			temp = 0;
+		}
+			
 		left.m_value[i] = s;
 	}
 
@@ -241,25 +262,30 @@ BigInteger& operator*=(BigInteger& left, const BigInteger& right) {
 		left = BigInteger();
 		return left;
 	}
+
 	int n = left.m_value.size(), m = right.m_value.size();
 	std::vector<int> v(n + m, 0);
+
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			v[i + j] += (left.m_value[i]) * (right.m_value[j]);
 		}
 	}
+
 	n += m;
 	left.m_value.resize(v.size());
 	
-	for (int s, i = 0, t = 0; i < n; i++) {
-		s = t + v[i];
+	for (int s, i = 0, temp = 0; i < n; i++) {
+		s = temp + v[i];
 		v[i] = s % 10;
-		t = s / 10;
+		temp = s / 10;
 		left.m_value[i] = v[i];
 	}
+
 	for (int i = n - 1; (i >= 1 && !v[i]); i--) {
 		left.m_value.pop_back();
 	}
+
 	return left;
 }
 
@@ -271,12 +297,13 @@ BigInteger operator*(const BigInteger& left, const BigInteger& right) {
 }
 
 BigInteger& operator/=(BigInteger& left, const BigInteger& right){
-	if (Null(right))
-		throw("Error: Division By 0");
-
+	if (Null(right)) {
+		throw std::runtime_error("Error Division By 0");
+	}
+		
 	if (left < right) {
-		left = BigInteger();
-		return left;
+		left = BigInteger();		
+		return left;				// return 0
 	}
 	if (left == right) {
 		left = BigInteger(1);
@@ -286,9 +313,9 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 	int i, j, lgcat = 0;
 	int n = Length(left), m = Length(right);
 	std::vector<int> cat(n, 0);
-	BigInteger temp;
+	BigInteger temp = BigInteger();
 
-	for (i = n - 1; (temp * 10 + left.m_value[i]) < right; i--) {
+	for (i = n - 1; temp * 10 + left.m_value[i] < right; i--) {
 		temp *= 10;
 		temp += left.m_value[i];
 	}
@@ -303,10 +330,11 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 
 	left.m_value.resize(cat.size());
 	
-	for (i = 0; i < lgcat; i++)
+	for (i = 0; i < lgcat; i++) {
 		left.m_value[i] = cat[lgcat - i - 1];
-
+	}
 	left.m_value.resize(lgcat);
+
 	return left;
 }
 
@@ -319,12 +347,14 @@ BigInteger operator/(const BigInteger& left, const BigInteger& right) {
 }
 
 BigInteger& operator%=(BigInteger& left, const BigInteger& right) {
-	if (Null(right))
+	if (Null(right)) {
 		throw("Error: Division By 0");
-
-	if (left < right)
+	}
+		
+	if (left < right) {
 		return left;
-
+	}
+		
 	if (left == right) {
 		left = BigInteger();
 		return left;
@@ -333,7 +363,7 @@ BigInteger& operator%=(BigInteger& left, const BigInteger& right) {
 	int i, j, lgcat = 0;
 	int n = Length(left), m = Length(right);
 	std::vector<int> cat(n, 0);
-	BigInteger temp;
+	BigInteger temp = BigInteger();
 
 	for (i = n - 1; (temp * 10 + left.m_value[i]) < right; i--) {
 		temp *= 10;
@@ -347,6 +377,7 @@ BigInteger& operator%=(BigInteger& left, const BigInteger& right) {
 		cat[lgcat++] = j;
 	}
 	left = temp;
+
 	return left;
 }
 
@@ -362,8 +393,9 @@ BigInteger& operator^=(BigInteger& left, const BigInteger& right) {
 	exponent = right;
 	left = 1;
 	while (!Null(exponent)) {
-		if (exponent[0] & 1)
+		if (exponent[0] & 1) {
 			left *= base;
+		}
 		base *= base;
 		divide_by_2(exponent);
 	}
@@ -386,15 +418,17 @@ std::istream& operator>>(std::istream& in, BigInteger& a) {
 	in >> s;
 	int n = s.size();
 	for (int i = n - 1; i >= 0; i--) {
-		if (!isdigit(s[i]))
+		if (!isdigit(s[i])) {
 			throw("INVALID NUMBER");
+		}
 		a.m_value[n - i - 1] = s[i];
 	}
 	return in;
 }
 
 std::ostream& operator<<(std::ostream &out, const BigInteger &a) {
-	for (int i = a.m_value.size() - 1; i >= 0; i--)
+	for (int i = a.m_value.size() - 1; i >= 0; i--) {
 		std::cout << (short)a.m_value[i];
+	}
 	return std::cout;
 }
