@@ -1,7 +1,7 @@
 #include "BigInteger.h"
 #include <math.h>
-//		Constructor
 
+//	Constructor
 BigInteger::BigInteger(ull number){
 	do {
 		m_value.push_back(number % 10);
@@ -33,11 +33,9 @@ BigInteger::BigInteger(const char* s) {
 	}
 }
 
-BigInteger::BigInteger(BigInteger& ref_BigInteger) {
-	m_value = ref_BigInteger.m_value;
-}
+BigInteger::BigInteger(BigInteger& ref_BigInteger) : m_value(ref_BigInteger.m_value) { std::cout << "& 생성자 호출" << "\n"; }
 
-BigInteger::BigInteger(const BigInteger& other) : m_value(other.m_value) {}
+BigInteger::BigInteger(const BigInteger& other) : m_value(other.m_value) { std::cout << "const & 생성자 호출" << "\n"; }
 
 // r-value
 //BigInteger::BigInteger(BigInteger&& ref_BigInteger) {
@@ -61,7 +59,7 @@ bool Null(const BigInteger& ref_BigInteger) {
 	return false;
 }
 
-int Length(const BigInteger& ref_BigInteger) {
+int Length(const BigInteger& ref_BigInteger){
 	return ref_BigInteger.m_value.size();
 }
 
@@ -319,36 +317,71 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 		temp *= 10;
 		temp += left.m_value[i];
 	}
+	
+	std::cout << "temp = " << temp << "\n";
+	std::cout << "n " << n  << "m: " << m << "\n"; // <<  TestCode!!!
+	/*warning!!*/
+	/*warning!!*/
+	/*warning!!*/
+	/*warning!!*/
 
+	for (auto i : cat) {						// <<  TestCode!!!
+		std::cout << "cat 1: " << i << "\n";	// <<  TestCode!!!
+	}											// <<  TestCode!!!
+
+
+	for (auto i : left.m_value) {						// <<  TestCode!!!
+		std::cout << "left 1: " << i << "\n";	// <<  TestCode!!!
+	}											// <<  TestCode!!!
+
+	// 여기서 에러남
+	// 여기서 에러남
+	// 여기서 에러남
+	// 여기서 에러남
+	// 여기서 에러남
 	for (; i >= 0; i--) {
-		temp = (temp * 10) + left.m_value[i];
+		temp = temp * 10 + left.m_value[i];
 		for (j = 9; j * right > temp; j--);
 
-		temp -= (j * right);
+		temp -= j * right;
 		cat[lgcat++] = j;
 	}
 
-	left.m_value.resize(cat.size());
+	for (auto i : cat) {						// <<  TestCode!!!
+		std::cout << "cat 2: " << i << "\n";	// <<  TestCode!!!
+	}											// <<  TestCode!!!
 	
+	left.m_value.resize(cat.size());
+	// // TestCode!!!
+	// TestCode!!!
+	// TestCode!!!
+	// TestCode!!!
+	std::cout << "function left1 : " << left << "\n";        // <<  TestCode!!!
+
 	for (i = 0; i < lgcat; i++) {
 		left.m_value[i] = cat[lgcat - i - 1];
 	}
 	left.m_value.resize(lgcat);
-
+	// TestCode!!!
+	// TestCode!!!
+	// TestCode!!!
+	// TestCode!!!
+	std::cout << "function left2 : " << left << "\n";	// << TestCode!!!
 	return left;
 }
-
 
 BigInteger operator/(const BigInteger& left, const BigInteger& right) {
 	BigInteger temp;
 	temp = left;
+	std::cout << "left: " << left << "\n";
 	temp /= right;
+	std::cout << "temp: " << temp << "\n";
 	return temp;
 }
 
 BigInteger& operator%=(BigInteger& left, const BigInteger& right) {
 	if (Null(right)) {
-		throw("Error: Division By 0");
+		throw std::runtime_error("Error Division By 0");
 	}
 		
 	if (left < right) {
@@ -419,7 +452,7 @@ std::istream& operator>>(std::istream& in, BigInteger& a) {
 	int n = s.size();
 	for (int i = n - 1; i >= 0; i--) {
 		if (!isdigit(s[i])) {
-			throw("INVALID NUMBER");
+			throw std::invalid_argument("INVALID NUMBER");
 		}
 		a.m_value[n - i - 1] = s[i];
 	}
