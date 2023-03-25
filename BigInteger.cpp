@@ -318,64 +318,26 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 		temp += left.m_value[i];
 	}
 	
-	std::cout << "temp = " << temp << "\n";
-	std::cout << "n " << n  << "m: " << m << "\n"; // <<  TestCode!!!
-	/*warning!!*/
-	/*warning!!*/
-	/*warning!!*/
-	/*warning!!*/
-
-	for (auto i : cat) {						// <<  TestCode!!!
-		std::cout << "cat 1: " << i << "\n";	// <<  TestCode!!!
-	}											// <<  TestCode!!!
-
-
-	for (auto i : left.m_value) {						// <<  TestCode!!!
-		std::cout << "left 1: " << i << "\n";	// <<  TestCode!!!
-	}											// <<  TestCode!!!
-
-	// 여기서 에러남
-	// 여기서 에러남
-	// 여기서 에러남
-	// 여기서 에러남
-	// 여기서 에러남
+	//warning!!!
+	//warning!!!
+	//warning!!!
+	//warning!!!
 	for (; i >= 0; i--) {
 		temp = temp * 10 + left.m_value[i];
 		for (j = 9; j * right > temp; j--);
 
 		temp -= j * right;
 		cat[lgcat++] = j;
-	}
-
-	for (auto i : cat) {						// <<  TestCode!!!
-		std::cout << "cat 2: " << i << "\n";	// <<  TestCode!!!
-	}											// <<  TestCode!!!
-	
+	}	
 	left.m_value.resize(cat.size());
-	// // TestCode!!!
-	// TestCode!!!
-	// TestCode!!!
-	// TestCode!!!
-	std::cout << "function left1 : " << left << "\n";        // <<  TestCode!!!
-
-	for (i = 0; i < lgcat; i++) {
-		left.m_value[i] = cat[lgcat - i - 1];
-	}
-	left.m_value.resize(lgcat);
-	// TestCode!!!
-	// TestCode!!!
-	// TestCode!!!
-	// TestCode!!!
-	std::cout << "function left2 : " << left << "\n";	// << TestCode!!!
+	
 	return left;
 }
 
 BigInteger operator/(const BigInteger& left, const BigInteger& right) {
 	BigInteger temp;
 	temp = left;
-	std::cout << "left: " << left << "\n";
 	temp /= right;
-	std::cout << "temp: " << temp << "\n";
 	return temp;
 }
 
