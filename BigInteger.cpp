@@ -28,12 +28,11 @@ BigInteger::BigInteger(const char* s) {
 		if (!isdigit(s[i])) {
 			throw("ERROR");
 		}
-			
 		m_value.push_back(s[i] - '0');
 	}
 }
 
-BigInteger::BigInteger(BigInteger& ref_BigInteger) : m_value(ref_BigInteger.m_value) { }
+BigInteger::BigInteger(BigInteger& ref_BigInteger) : m_value{ ref_BigInteger.m_value } { }
 
 BigInteger::BigInteger(const BigInteger& other) : m_value(other.m_value) { }
 
@@ -308,7 +307,7 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 		return left;
 	}
 
-	int i, lgcat = 0, cc;
+	int i, lgcat = 0, cc = 9;
 	int n = Length(left), m = Length(right);
 	std::vector<int> cat(n, 0);
 	BigInteger temp;
@@ -319,22 +318,31 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 	}
 	
 
-	// 여기서 에러남
-	// cat에서 에러가 발생
+	//  legacy code..
+	//for (; i >= 0; i--) {
+	//	temp = temp * 10 + left.m_value[i];
+	//	for (cc = 9; cc * right > temp; cc--);		// stop
+	//	temp -= cc * right;
+	//	cat[lgcat++] = cc;
+	//}
+
 	for (; i >= 0; i--) {
 		temp = temp * 10 + left.m_value[i];
-		for (cc = 9; cc * right > temp; cc--);
+		cc = 0;
 
-		temp -= cc * right;
+		while (temp >= right) {
+			temp -= right;
+			cc++;
+		}
+
 		cat[lgcat++] = cc;
 	}
-
 	
 	left.m_value.resize(cat.size());
 	
-	for (i = 0; i < lgcat; i++) {
+	for (i = 0; i < lgcat; i++) 
 		left.m_value[i] = cat[lgcat - i - 1];
-	}
+	
 	left.m_value.resize(lgcat);
 
 	return left;
@@ -343,7 +351,11 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 BigInteger operator/(const BigInteger& left, const BigInteger& right) {
 	BigInteger temp;
 	temp = left;
+	std::cout << "left: " << left << "\n";
+	std::cout << "temp1: " << temp << "\n";
+	std::cout << "right: " << right << "\n";
 	temp /= right;
+	std::cout << "temp2: " << temp << "\n";
 	return temp;
 }
 
