@@ -343,11 +343,7 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 BigInteger operator/(const BigInteger& left, const BigInteger& right) {
 	BigInteger temp;
 	temp = left;
-	std::cout << "left: " << left << "\n";
-	std::cout << "temp1: " << temp << "\n";
-	std::cout << "right: " << right << "\n";
 	temp /= right;
-	std::cout << "temp2: " << temp << "\n";
 	return temp;
 }
 
