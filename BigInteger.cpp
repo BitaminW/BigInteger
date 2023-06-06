@@ -33,9 +33,9 @@ BigInteger::BigInteger(const char* s) {
 	}
 }
 
-BigInteger::BigInteger(BigInteger& ref_BigInteger) : m_value(ref_BigInteger.m_value) { std::cout << "& 생성자 호출" << "\n"; }
+BigInteger::BigInteger(BigInteger& ref_BigInteger) : m_value(ref_BigInteger.m_value) { }
 
-BigInteger::BigInteger(const BigInteger& other) : m_value(other.m_value) { std::cout << "const & 생성자 호출" << "\n"; }
+BigInteger::BigInteger(const BigInteger& other) : m_value(other.m_value) { }
 
 // r-value
 //BigInteger::BigInteger(BigInteger&& ref_BigInteger) {
@@ -280,7 +280,7 @@ BigInteger& operator*=(BigInteger& left, const BigInteger& right) {
 		left.m_value[i] = v[i];
 	}
 
-	for (int i = n - 1; (i >= 1 && !v[i]); i--) {
+	for (int i = n - 1; i >= 1 && !v[i]; i--) {
 		left.m_value.pop_back();
 	}
 
@@ -308,36 +308,46 @@ BigInteger& operator/=(BigInteger& left, const BigInteger& right){
 		return left;
 	}
 
-	int i, j, lgcat = 0;
+	int i, lgcat = 0, cc;
 	int n = Length(left), m = Length(right);
 	std::vector<int> cat(n, 0);
-	BigInteger temp = BigInteger();
+	BigInteger temp;
 
 	for (i = n - 1; temp * 10 + left.m_value[i] < right; i--) {
 		temp *= 10;
 		temp += left.m_value[i];
 	}
 	
-	//warning!!!
-	//warning!!!
-	//warning!!!
-	//warning!!!
+
+	// 여기서 에러남
+	// cat에서 에러가 발생
 	for (; i >= 0; i--) {
 		temp = temp * 10 + left.m_value[i];
-		for (j = 9; j * right > temp; j--);
+		for (cc = 9; cc * right > temp; cc--);
 
-		temp -= j * right;
-		cat[lgcat++] = j;
-	}	
+		temp -= cc * right;
+		cat[lgcat++] = cc;
+	}
+
+	
 	left.m_value.resize(cat.size());
 	
+	for (i = 0; i < lgcat; i++) {
+		left.m_value[i] = cat[lgcat - i - 1];
+	}
+	left.m_value.resize(lgcat);
+
 	return left;
 }
 
 BigInteger operator/(const BigInteger& left, const BigInteger& right) {
 	BigInteger temp;
 	temp = left;
+	std::cout << "left: " << left << "\n";
+	std::cout << "temp1: " << temp << "\n";
+	std::cout << "right: " << right << "\n";
 	temp /= right;
+	std::cout << "temp2: " << temp << "\n";
 	return temp;
 }
 
@@ -427,3 +437,5 @@ std::ostream& operator<<(std::ostream &out, const BigInteger &a) {
 	}
 	return std::cout;
 }
+
+
